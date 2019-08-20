@@ -1,4 +1,4 @@
-module comparezip
+module matcher
 
 go 1.12
 

@@ -1,4 +1,4 @@
-package comparezip
+package matcher
 
 import (
 	"archive/zip"

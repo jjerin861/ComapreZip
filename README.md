@@ -1,5 +1,5 @@
-# ComapreZip
-Got Archives? ComapreZip's archive compare feature allows you to compare the contents of .zip files
+# matcher
+Got Archives? matcher's archive compare feature allows you to compare the contents of .zip files
 
 ## Basic Usage
 Here is a minimal example usage that will compare zip files given as arguments:
@@ -11,11 +11,11 @@ package main
 import (
     "fmt"
     "log"
-    "github.com/jjerin861/ComapreZip"
+    "github.com/jjerin861/matcher"
 )
 
 func main() {
-	err := compareZip.Compare(os.Args[1], os.Args[2])
+	err := matcher.Compare(os.Args[1], os.Args[2])
 	if err != nil {
 		log.Fatal(err)
 	}

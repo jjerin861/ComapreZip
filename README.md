@@ -1,10 +1,10 @@
 # ComapreZip
 Got Archives? ComapreZip's archive compare feature allows you to compare the contents of .zip files
 
-** Basic Usage
+## Basic Usage
 Here is a minimal example usage that will compare zip files given as arguments:
 
-#+BEGIN_SRC go
+```go
 
 package main
 
@@ -27,4 +27,4 @@ func main() {
 
 }
 
-#+END_SRC
+```

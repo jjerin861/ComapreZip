@@ -28,13 +28,16 @@ func NewZipMatcher(zip1Name, zip2Name string) (*Zip, *Zip, error) {
 	zip1 := &Zip{
 		Name:       zip1Name,
 		ReadCloser: zip1Reader,
+		Files:      map[string]*zip.File{},
 	}
+
 	for _, f := range zip1Reader.File {
 		zip1.Files[f.Name] = f
 	}
 	zip2 := &Zip{
 		Name:       zip2Name,
 		ReadCloser: zip2Reader,
+		Files:      map[string]*zip.File{},
 	}
 	for _, f := range zip2Reader.File {
 		zip2.Files[f.Name] = f
@@ -44,7 +47,7 @@ func NewZipMatcher(zip1Name, zip2Name string) (*Zip, *Zip, error) {
 
 // Compare compares two zips and returns the first error or diff in the
 // zips. If two of them are matching then nil will be returned.
-func (zip1 Zip) Compare(zip2 Zip) error {
+func (zip1 *Zip) Compare(zip2 *Zip) error {
 
 	// Iterate through the files in the archive, returning diff of their
 	// contents.

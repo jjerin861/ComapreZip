@@ -40,7 +40,7 @@ func NewTextMatcher(text1Name, text2Name string) (*Texts, error) {
 
 // Compare
 func (text *Texts) Compare() (bool, error) {
-	readerErr, err := Compare(text.text1.Reader, text.text2.Reader, false)
+	readerErr, err := Compare(text.text1.Reader, text.text2.Reader, true)
 	if err == io.EOF {
 		return false, nil
 	}

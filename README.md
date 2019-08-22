@@ -1,5 +1,5 @@
 # matcher
-Got Archives? matcher's compare feature allows you to compare the contents of 
+Got files? matcher's compare feature allows you to compare the contents of 
 zip,csv,txt files
 
 ## Basic Usage

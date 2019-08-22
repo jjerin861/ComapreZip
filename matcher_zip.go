@@ -8,63 +8,65 @@ import (
 )
 
 // NewZipMatcher
-func NewZipMatcher(zip1Name, zip2Name string) (*Zip, *Zip, error) {
+func NewZipMatcher(zip1Name, zip2Name string) (*Zips, error) {
 	zip1Reader, err := zip.OpenReader(zip1Name)
 	if err != nil {
-		return nil, nil, errors.Wrapf(
+		return nil, errors.Wrapf(
 			err,
 			"can not open:%s",
 			zip1Name,
 		)
 	}
+	zips := &Zips{
+		zip1: &Zip{
+			Name:       zip1Name,
+			ReadCloser: zip1Reader,
+			Files:      map[string]*zip.File{},
+		},
+	}
+	for _, f := range zip1Reader.File {
+		zips.zip1.Files[f.Name] = f
+	}
 	zip2Reader, err := zip.OpenReader(zip2Name)
 	if err != nil {
-		return nil, nil, errors.Wrapf(
+		return nil, errors.Wrapf(
 			err,
 			"can not open:%s",
 			zip2Name,
 		)
 	}
-	zip1 := &Zip{
-		Name:       zip1Name,
-		ReadCloser: zip1Reader,
-		Files:      map[string]*zip.File{},
-	}
 
-	for _, f := range zip1Reader.File {
-		zip1.Files[f.Name] = f
-	}
-	zip2 := &Zip{
+	zips.zip2 = &Zip{
 		Name:       zip2Name,
 		ReadCloser: zip2Reader,
 		Files:      map[string]*zip.File{},
 	}
 	for _, f := range zip2Reader.File {
-		zip2.Files[f.Name] = f
+		zips.zip2.Files[f.Name] = f
 	}
-	return zip1, zip2, nil
+	return zips, nil
 }
 
 // Compare compares two zips and returns the first error or diff in the
 // zips. If two of them are matching then nil will be returned.
-func (zip1 *Zip) Compare(zip2 *Zip) error {
+func (zips *Zips) Compare() error {
 
 	// Iterate through the files in the archive, returning diff of their
 	// contents.
-	for f1Name, f1 := range zip1.Files {
-		if zip2.Files[f1Name] == nil {
+	for f1Name, f1 := range zips.zip1.Files {
+		if zips.zip2.Files[f1Name] == nil {
 			return fmt.Errorf(
 				"file not found in zip:%s file:%s",
-				zip2.Name,
+				zips.zip2.Name,
 				f1Name,
 			)
 		}
-		f2 := zip2.Files[f1Name]
+		f2 := zips.zip2.Files[f1Name]
 		matched := fileTypeRegex.FindStringSubmatch(f1Name)
 		if len(matched) != 2 {
 			return fmt.Errorf(
 				"can not find file format zip:%s file:%s",
-				zip1.Name,
+				zips.zip1.Name,
 				f1Name,
 			)
 		}
@@ -73,7 +75,7 @@ func (zip1 *Zip) Compare(zip2 *Zip) error {
 			return errors.Wrapf(
 				err,
 				"can not open file zip:%s file:%s",
-				zip1.Name,
+				zips.zip1.Name,
 				f1Name,
 			)
 		}
@@ -82,7 +84,7 @@ func (zip1 *Zip) Compare(zip2 *Zip) error {
 			return errors.Wrapf(
 				err,
 				"can not open file zip:%s file:%s",
-				zip2.Name,
+				zips.zip2.Name,
 				f1Name,
 			)
 		}
@@ -98,7 +100,7 @@ func (zip1 *Zip) Compare(zip2 *Zip) error {
 				},
 			}
 
-			zip1.Matcher = csv
+			zips.Matcher = csv
 		} else if matched[1] == "txt" {
 
 			text := &Texts{
@@ -112,21 +114,21 @@ func (zip1 *Zip) Compare(zip2 *Zip) error {
 				},
 			}
 
-			zip1.Matcher = text
+			zips.Matcher = text
 		}
-		readerErr, err := zip1.Matcher.Compare()
+		readerErr, err := zips.Matcher.Compare()
 		if err != nil {
 			if readerErr {
 				return errors.Wrapf(
 					err,
 					"zip:%s",
-					zip2.Name,
+					zips.zip2.Name,
 				)
 			}
 			return errors.Wrapf(
 				err,
 				"zip:%s",
-				zip1.Name,
+				zips.zip1.Name,
 			)
 		}
 

@@ -122,5 +122,4 @@ func Compare(reader1, reader2 io.Reader, byLine bool) (bool, error) {
 		}
 
 	}
-	return false, nil
 }

@@ -21,7 +21,7 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Printf(
-		"%s and %s are matching/n",
+		"%s and %s are matching\n",
 		os.Args[1],
 		os.Args[2],
 	)

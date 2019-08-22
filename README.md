@@ -1,8 +1,9 @@
 # matcher
-Got Archives? matcher's archive compare feature allows you to compare the contents of .zip files
+Got Archives? matcher's compare feature allows you to compare the contents of 
+zip,csv,txt files
 
 ## Basic Usage
-Here is a minimal example usage that will compare zip files given as arguments:
+Here is a minimal example usage that will compare files given as arguments:
 
 ```go
 
@@ -15,7 +16,7 @@ import (
 )
 
 func main() {
-	err := matcher.Compare(os.Args[1], os.Args[2])
+	err := matcher.Match(os.Args[1], os.Args[2])
 	if err != nil {
 		log.Fatal(err)
 	}
